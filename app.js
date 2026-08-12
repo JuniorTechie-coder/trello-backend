@@ -3,6 +3,7 @@ const express = require('express');
 const pool = require('./db');
 const userRoutes = require('./routes/users');
 const workspacesRoutes = require('./routes/workspaces');
+const boardsRoute = require('./routes/boards');
 
 
 const app = express();
@@ -20,6 +21,7 @@ app.use((req, res, next) => {
 //Routes
 app.use('/api/users', userRoutes);
 app.use('/api/workspaces', workspacesRoutes);
+app.use('/api/boards', boardsRoute);
 
 
 //404 handelers
