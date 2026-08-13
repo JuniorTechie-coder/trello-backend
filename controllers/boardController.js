@@ -7,13 +7,14 @@ const getworkspacesboards = async (req, res) => {
         const workspacesboardId = req.params.id;
 
         //Hit the database
-        const boardsResult = await pool.query('SELECT * FROM boards WHERE boards_id =$1',
+        const boardsResult = await pool.query('SELECT * FROM boards WHERE workspace_id =$1',
             [workspacesboardId]);
 
         res.status(200).json(boardsResult.rows);
 
     } catch (error) {
-        res.status(500).json({ error: 'An error occured in server!' });
+        console.error(error);
+        res.status(500).json({ message: "Somethis went wrong", error: error.message  });
     }
 }
 
@@ -72,33 +73,48 @@ const addBoards = async (req, res) => {
     }
 }
 
+
 //Logic to update/edit boards
 const updateBoards = async (req, res) => {
     try {
-        // extract data to update data
-        const { name, background } = req.body;
+        // Extract data
+        const { workspace_id } = req.body;
         const id = req.params.id;
 
-        //Validation 
-        if (!name || !background) {
-            //Bad request(missing field 400 status code)
-            return res.status(400).json({ error: 'Not found!' }); // add return
+        // Validation
+        if (!workspace_id) {
+            return res.status(400).json({
+                error: 'workspace_id is required!'
+            });
         }
 
-        //Hit Database 
-        const updatedResult = await pool.query('UPDATE boards SET name = $1, background = $2 WHERE id = $3 RETURNING *',
-            [name, background, id]);
+        // Hit Database
+        const updatedResult = await pool.query(
+            'UPDATE boards SET workspace_id = $1 WHERE id = $2 RETURNING *',
+            [workspace_id, id]
+        );
 
-        //Check the result now 
+        // Check result
         if (updatedResult.rows.length === 0) {
-            res.status(404).json({ error: 'board with this id does not exist!' });
-        } else {
-            res.status(200).json({ message: 'board updated successfully!' });
+            return res.status(404).json({
+                error: 'Board with this id does not exist!'
+            });
         }
+
+        res.status(200).json({
+            message: 'Board updated successfully!',
+            board: updatedResult.rows[0]
+        });
+
     } catch (error) {
-        res.status(500).json({ error: 'An Error occured in server!' });
+        console.error(error);
+
+        res.status(500).json({
+            error: 'An error occurred on server!'
+        });
     }
-}
+};
+
 
 //Logic to delete the boards
 const deleteBoardsId = async (req, res) => {
@@ -107,7 +123,7 @@ const deleteBoardsId = async (req, res) => {
         const id = parseInt(req.params.id);
 
         //Hit Database 
-        const deleteBoards = await pool.query('DELETE FROM workspaces WHERE id = $1 RETURNING *',
+        const deleteBoards = await pool.query('DELETE FROM boards WHERE id = $1 RETURNING *',
             [id]);
 
         //Check the result now 
