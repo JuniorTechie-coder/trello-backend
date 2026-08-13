@@ -1,7 +1,7 @@
 const pool = require('../db');
 
 
-//Logic to Get all boards in a workspace
+//Logic to Get all boards in a workspace(by its id)
 const getworkspacesboards = async (req, res) => {
     try {
         const workspacesboardId = req.params.id;
@@ -18,7 +18,7 @@ const getworkspacesboards = async (req, res) => {
     }
 }
 
-//Logic of Open a specific board
+//Logic of Open a specific board by ist own id
 const getBoards = async (req, res) => {
     try {
         const boardsId = req.params.id;
