@@ -4,6 +4,7 @@ const pool = require('./db');
 const userRoutes = require('./routes/users');
 const workspacesRoutes = require('./routes/workspaces');
 const boardsRoute = require('./routes/boards');
+const listsRoute = require('./routes/lists');
 
 
 const app = express();
@@ -22,6 +23,7 @@ app.use((req, res, next) => {
 app.use('/api/users', userRoutes);
 app.use('/api/workspaces', workspacesRoutes);
 app.use('/api/boards', boardsRoute);
+app.use('/api/lists', listsRoute);
 
 
 //404 handelers
