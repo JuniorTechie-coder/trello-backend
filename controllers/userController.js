@@ -63,7 +63,7 @@ const deleteUsers = async (req, res) => {
         const id = parseInt(req.params.id);
 
         //hit the database 
-        const delUser = await pool.query('DELETE FROM users WHERE id = $1 Returning *', [id]);
+        const delUser = await pool.query('DELETE FROM users WHERE user_id = $1 Returning *', [id]);
 
         //now validate to see if anything was deleted
         if (delUser.rows.length === 0) {
@@ -75,6 +75,7 @@ const deleteUsers = async (req, res) => {
         }
     }
     catch (error) {
+        console.error(error);
         res.status(500).json({ error: 'An server error occured!' });
     }
 }

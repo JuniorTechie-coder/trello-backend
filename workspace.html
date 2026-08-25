@@ -1,0 +1,70 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Workspaces — Trello Clone</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="style (1).css">
+</head>
+<body style="background-color: var(--bg-page);">
+
+    <header class="navbar" style="background-color: #0c2340;">
+        <a class="logo" href="index.html">Trello Clone</a>
+        <div class="navbar-center">
+            <button id="crumbWorkspaces" class="crumb-btn">Workspaces</button>
+            <span id="crumbSep" class="crumb-sep" hidden>/</span>
+            <span id="crumbBoardWs" class="crumb-current" hidden></span>
+        </div>
+        <div class="user-section">
+            <span style="color: #ffffff; font-size: 13px; font-weight: 500;">Tanmay</span>
+            <div class="avatar">T</div>
+        </div>
+    </header>
+
+    <main class="workspace-page">
+
+        <!-- Workspaces list view -->
+        <section id="workspacesView">
+            <div class="section-heading">
+                <div>
+                    <h1>Your Workspaces</h1>
+                    <p class="muted" style="font-size:13px; margin-top:2px;">Select a workspace to view and manage its boards</p>
+                </div>
+                <button class="primary-btn" id="newWorkspaceBtn">+ New Workspace</button>
+            </div>
+            <div class="tile-grid" id="workspaceGrid"></div>
+        </section>
+
+        <!-- Boards-in-a-workspace view -->
+        <section id="boardsView" hidden>
+            <div class="section-heading">
+                <div>
+                    <h1 id="boardsWsName">Workspace</h1>
+                    <p class="muted" style="font-size:13px; margin-top:2px;">Boards in this workspace</p>
+                </div>
+                <button class="primary-btn" id="newBoardBtn">+ Add Board</button>
+            </div>
+            <div class="tile-grid" id="boardGrid"></div>
+        </section>
+
+    </main>
+
+    <!-- Generic name-entry modal -->
+    <div class="modal-overlay" id="modalOverlay" hidden>
+        <div class="modal">
+            <h3 id="modalTitle">New item</h3>
+            <input type="text" id="modalInput" placeholder="Name" maxlength="60" autocomplete="off">
+            <div class="modal-actions">
+                <button class="ghost-btn" id="modalCancel">Cancel</button>
+                <button class="primary-btn" id="modalConfirm">Create</button>
+            </div>
+        </div>
+    </div>
+
+    <script src="storage.js"></script>
+    <script src="workspace.js"></script>
+</body>
+</html>

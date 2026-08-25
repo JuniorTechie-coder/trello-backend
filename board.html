@@ -1,0 +1,111 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Board — Trello Clone</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="style (1).css">
+</head>
+<body class="theme-sunset">
+
+    <header class="navbar">
+        <a class="logo" href="index.html">Trello Clone</a>
+        <div class="navbar-center">
+            <a href="workspace.html" id="crumbWs" class="crumb-btn">Workspace</a>
+            <span class="crumb-sep">/</span>
+            <span id="crumbBoard" class="crumb-current">Board</span>
+        </div>
+        <div class="user-section">
+            <div class="theme-picker" id="themePicker" title="Board Theme">
+                <button class="theme-btn sunset active" data-theme="theme-sunset" title="Pink Sunset"></button>
+                <button class="theme-btn magenta" data-theme="theme-magenta" title="Neon Magenta"></button>
+                <button class="theme-btn ocean" data-theme="theme-ocean" title="Ocean Blue"></button>
+                <button class="theme-btn midnight" data-theme="theme-midnight" title="Midnight Violet"></button>
+            </div>
+            <div class="role-toggle" id="roleToggle">
+                <button class="role-btn active" data-role="member">Team Member</button>
+                <button class="role-btn" data-role="lead">Team Lead</button>
+            </div>
+            <div class="avatar" title="Tanmay (Active User)">T</div>
+        </div>
+    </header>
+
+    <div class="app-container">
+
+        <aside class="sidebar">
+            <h3>Workspace</h3>
+            <div class="workspace-name" id="sidebarWsName">My Workspace</div>
+            <nav>
+                <a href="workspace.html">📋 Boards</a>
+                <a href="#" style="opacity:0.8;">👥 Members</a>
+                <a href="#" style="opacity:0.8;">⚙️ Settings</a>
+            </nav>
+        </aside>
+
+        <main class="main-content">
+
+            <section class="board-header">
+                <div>
+                    <h1 id="boardTitle">Board</h1>
+                    <p id="boardBreadcrumb">Workspace / Board</p>
+                </div>
+            </section>
+
+            <!-- Team Lead backlog: a separate, non-list source of cards -->
+            <section class="backlog-panel">
+                <div class="backlog-header">
+                    <div>
+                        <h2>Team Lead Backlog</h2>
+                        <p class="muted" id="backlogHint">Drag a card into a list to start working on it.</p>
+                    </div>
+                    <button class="primary-btn" id="addBacklogCardBtn" hidden>+ Stage Card</button>
+                </div>
+                <div class="backlog-cards" id="backlogCards"></div>
+            </section>
+
+            <section class="board" id="boardLists"></section>
+
+        </main>
+    </div>
+
+    <!-- Add / edit card modal -->
+    <div class="modal-overlay" id="cardModalOverlay" hidden>
+        <div class="modal">
+            <h3 id="cardModalTitle">New card</h3>
+            <input type="text" id="cardTitleInput" placeholder="Card title" maxlength="80" autocomplete="off">
+            <textarea id="cardDescInput" placeholder="Description (optional)" rows="3" maxlength="300"></textarea>
+            <div class="modal-row">
+                <select id="cardPriorityInput" aria-label="Priority">
+                    <option value="Low">Priority: Low</option>
+                    <option value="Medium" selected>Priority: Medium</option>
+                    <option value="High">Priority: High</option>
+                    <option value="Done">Priority: Done</option>
+                </select>
+                <input type="text" id="cardAssigneeInput" placeholder="Assignee (e.g. Tanmay)" maxlength="40">
+            </div>
+            <div class="modal-actions">
+                <button class="ghost-btn" id="cardModalCancel">Cancel</button>
+                <button class="primary-btn" id="cardModalConfirm">Save Card</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Add list modal -->
+    <div class="modal-overlay" id="listModalOverlay" hidden>
+        <div class="modal">
+            <h3>New list</h3>
+            <input type="text" id="listNameInput" placeholder="List title (e.g. In Review)" maxlength="40" autocomplete="off">
+            <div class="modal-actions">
+                <button class="ghost-btn" id="listModalCancel">Cancel</button>
+                <button class="primary-btn" id="listModalConfirm">Add List</button>
+            </div>
+        </div>
+    </div>
+
+    <script src="storage.js"></script>
+    <script src="board.js"></script>
+</body>
+</html>

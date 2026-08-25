@@ -4,7 +4,16 @@ const pool = require('../db');
 //This is the logic to get all workspaces
 const getAllWorkspaces = async (req, res) => {
     try {
-        const allWorkspaces = await pool.query('SELECT * FROM workspaces');
+     //testing the error  
+     console.log("USER FROM JWT:", req.user);
+
+        const allWorkspaces = await pool.query(
+            'SELECT * FROM workspaces WHERE owner_id = $1', 
+            [req.user.user_id]);//this comes from JWT
+
+     //secont test for error
+       console.log("WORKSPACES:", allWorkspaces.rows);
+
         res.status(200).json(allWorkspaces.rows);
     } catch (error) {
         res.status(500).json({ error: 'Error occured in server' });

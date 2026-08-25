@@ -1,0 +1,85 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Trello Clone — Organize anything, together</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="style (1).css">
+</head>
+<body class="landing-body">
+
+    <header class="landing-nav">
+        <a class="logo" href="index.html">Trello Clone</a>
+        <a class="ghost-btn" href="workspace.html">Open Workspace &rarr;</a>
+    </header>
+
+    <main>
+        <section class="hero">
+            <div class="hero-text">
+                <span class="eyebrow">✨ Boards · Lists · Cards</span>
+                <h1>One board.<br>Every task in its place.</h1>
+                <p>
+                    Spin up a workspace, add boards for each project, and move work
+                    from <strong>To Do</strong> to <strong>Done</strong> by dragging
+                    cards where they belong. Team leads stage the backlog —
+                    the team pulls cards in when they're ready to start.
+                </p>
+                <div class="hero-actions">
+                    <a href="workspace.html" class="primary-btn large">+ Create your first workspace</a>
+                </div>
+            </div>
+
+            <div class="hero-board-preview" aria-hidden="true">
+                <div class="preview-list">
+                    <div class="preview-list-title">To Do (2)</div>
+                    <div class="preview-card">
+                        <div>Design Login Page</div>
+                        <span class="badge priority-high" style="margin-top:6px;font-size:10px;">High</span>
+                    </div>
+                    <div class="preview-card">
+                        <div>Create User API</div>
+                        <span class="badge priority-medium" style="margin-top:6px;font-size:10px;">Medium</span>
+                    </div>
+                </div>
+                <div class="preview-list">
+                    <div class="preview-list-title">In Progress (1)</div>
+                    <div class="preview-card dragging">
+                        <div>JWT Auth</div>
+                        <span class="badge priority-high" style="margin-top:6px;font-size:10px;">High</span>
+                    </div>
+                </div>
+                <div class="preview-list">
+                    <div class="preview-list-title">Completed (1)</div>
+                    <div class="preview-card done">
+                        <div>User CRUD</div>
+                        <span class="badge priority-done" style="margin-top:6px;font-size:10px;">Done</span>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <section class="feature-strip">
+            <div class="feature">
+                <h3>📁 Workspaces &amp; Boards</h3>
+                <p>Group boards by team or project inside a workspace, and drill into any board with smooth transitions.</p>
+            </div>
+            <div class="feature">
+                <h3>⚡ Drag-and-Drop Cards</h3>
+                <p>Move cards smoothly between lists and backlogs as work progresses with instant persistence.</p>
+            </div>
+            <div class="feature">
+                <h3>👑 Team Lead Backlog</h3>
+                <p>Leads stage upcoming work in an integrated backlog; members drag cards into active lists when ready.</p>
+            </div>
+        </section>
+    </main>
+
+    <footer class="landing-footer">
+        <span>Trello Clone — Practice Backend &amp; Frontend</span>
+    </footer>
+
+</body>
+</html>
