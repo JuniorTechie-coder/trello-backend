@@ -17,13 +17,13 @@ const protect = async (req, res, next) => {
     try {
         const decoded = jwt.verify(token, process.env.JWT_SECRET);//verify token 
 
-        //attach user to request and call next:
+        //attach user info to request and call next:
         req.user = decoded;
         next();
     }catch(error){
 
         console.error(error);
-        res.status(401).json({ error: 'Token is not Invalid!' });
+        res.status(401).json({ error: 'Invalid or expired token!' });
     }
     
     

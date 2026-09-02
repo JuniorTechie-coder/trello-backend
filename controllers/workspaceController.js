@@ -26,7 +26,7 @@ const getworkspacesId = async (req, res) => {
     try {
         const workspacesId = req.params.id;
 
-        const workspacesResult = await pool.query('SELECT * FROM workspaces WHERE id = $1', [workspacesId]);
+        const workspacesResult = await pool.query('SELECT * FROM workspaces WHERE id = $1 AND owner_id = $2', [workspacesId, req.user.user_id]);
         //validation to check data result 
         if (workspacesResult.rows.length == 0) {
             return res.status(404).json({ message: 'Data not found!' });
@@ -89,14 +89,14 @@ const updateWorkspaces = async (req, res) => {
         }
 
         //Hit Database 
-        const updatedData = await pool.query('UPDATE workspaces SET name = $1, description = $2 WHERE id = $3 RETURNING *',
-            [name, description, id]);
+        const updatedData = await pool.query('UPDATE workspaces SET name = $1, description = $2 WHERE id = $3 AND owner_id = $4 RETURNING *',
+            [name, description, id, req.user.user_id]);
 
         //Check the result now 
         if (updatedData.rows.length === 0) {
             res.status(404).json({ error: 'workspace with this id does not exist!' });
         } else {
-            res.status(200).json({ message: 'workspace updated successfully!' });
+            res.status(200).json(updatedData.rows[0]);
         }
 
     } catch (error) {
@@ -111,8 +111,8 @@ const deleteWorkspaces = async (req, res) => {
         const id = parseInt(req.params.id);
 
         //Hit Database 
-        const deleteData = await pool.query('DELETE FROM workspaces WHERE id = $1 RETURNING *',
-            [id]);
+        const deleteData = await pool.query('DELETE FROM workspaces WHERE id = $1 AND owner_id = $2 RETURNING *',
+            [id, req.user.user_id]);
 
         //Check the result now 
         if (deleteData.rows.length === 0) {
@@ -122,6 +122,7 @@ const deleteWorkspaces = async (req, res) => {
         }
 
     } catch (error) {
+        console.error(error);
         res.status(500).json({ error: 'An Error occured in server!' });
     }
 }
