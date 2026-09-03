@@ -5,10 +5,31 @@ const getListsCards = async (req, res) => {
     try {
         const listId = req.params.id;
 
-        const cardResult = await pool.query(
-            'SELECT * FROM cards WHERE list_id = $1',
-            [listId]
+        const listResult = await pool.query(
+            `SELECT lists.*
+             FROM lists
+             JOIN boards
+             ON lists.board_id = boards.id
+             JOIN workspaces
+             ON boards.workspace_id = workspaces.id
+             WHERE lists.id = $1
+             AND workspaces.owner_id = $2`,
+            [listId, req.user.user_id]
         );
+
+        if(listResult.rows.length === 0){
+            return res.status(404).json({
+                error: 'List does not exist or you are not authorized!'
+            });
+        }
+
+        //Get cards belonging to this list 
+        const cardResult = await pool.query(
+         `SELECT * FROM cards
+         WHERE list_id = $1`,
+         [listId]
+        );
+
 
         res.status(200).json(cardResult.rows);
 
@@ -28,11 +49,21 @@ const getCards = async (req, res) => {
         const cardsId = req.params.id;
 
         //Hit database
-        const cardIdResult = await pool.query('SELECT * FROM cards WHERE id = $1', [cardsId]);
+        const cardIdResult = await pool.query(`SELECT cards.*
+             FROM cards
+             JOIN lists
+             ON cards.list_id = lists.id
+             JOIN boards
+             ON lists.board_id = boards.id
+             JOIN workspaces
+             ON boards.workspace_id = workspaces.id
+             WHERE cards.id = $1
+             AND workspaces.owner_id = $2`,
+            [cardsId, req.user.user_id]);
 
         //Validation to check result
         if (cardIdResult.rows.length === 0) {
-            res.status(404).json({ error: 'Card with this id does not exist!' });
+             return res.status(404).json({ error: 'Card does not exist or you are not authorized!' });
         }
         else {
             res.status(200).json(cardIdResult.rows[0]);
@@ -48,19 +79,50 @@ const getCards = async (req, res) => {
 //Logic to create new cards 
 const addCards = async (req, res) => {
     try {
-        //fetch key for data fetching      
-        const {title, position, description , list_id, created_by } = req.body;
+        const { title, position, description, list_id } = req.body;
 
-        //validation 1 
-        if (!title || !position|| !description || !list_id || !created_by) {
-            return res.status(400).json({ error: 'All fields are required!' });
+        if (!title || position === undefined || !description || !list_id) {
+            return res.status(400).json({
+                error: 'All fields are required!'
+            });
         }
-        //Hit the Database
-        const resultCards = await pool.query('INSERT INTO cards(title, position, description ,list_id, created_by) VALUES($1, $2, $3, $4, $5) RETURNING *',
-            [title, position, description, list_id, created_by]);
 
-        //now extract newly created  cards from array
+        // Check whether the list belongs to the logged-in user
+        const listResult = await pool.query(
+            `SELECT lists.*
+             FROM lists
+             JOIN boards
+             ON lists.board_id = boards.id
+             JOIN workspaces
+             ON boards.workspace_id = workspaces.id
+             WHERE lists.id = $1
+             AND workspaces.owner_id = $2`,
+            [list_id, req.user.user_id]
+        );
+
+        if (listResult.rows.length === 0) {
+            return res.status(404).json({
+                error: 'List does not exist or you are not authorized!'
+            });
+        }
+
+        // Use logged-in user's ID instead of trusting created_by from request
+        const resultCards = await pool.query(
+            `INSERT INTO cards
+             (title, position, description, list_id, created_by)
+             VALUES($1, $2, $3, $4, $5)
+             RETURNING *`,
+            [
+                title,
+                position,
+                description,
+                list_id,
+                req.user.user_id
+            ]
+        );
+
         const finalCards = resultCards.rows[0];
+
         res.status(201).json({
             title: finalCards.title,
             position: finalCards.position,
@@ -71,13 +133,19 @@ const addCards = async (req, res) => {
 
     } catch (error) {
         console.error(error);
+
         if (error.code === '23505') {
-            res.status(500).json({ error: 'cards already existed!' });
-        } else {
-            res.status(500).json({ error: 'Server error' });
+            return res.status(500).json({
+                error: 'Card already existed!'
+            });
         }
+
+        res.status(500).json({
+            error: 'Server error'
+        });
     }
-}
+};
+
 
 //Logic to update/edit existing cards
 const updateCards = async (req, res) => {
@@ -92,6 +160,28 @@ const updateCards = async (req, res) => {
             });
         }
 
+        // Check whether the card belongs to the logged-in user
+        const cardResult = await pool.query(
+            `SELECT cards.*
+            FROM cards
+            JOIN lists
+            ON cards.list_id = lists.id
+            JOIN boards
+            ON lists.board_id = boards.id
+            JOIN workspaces
+            ON boards.workspace_id = workspaces.id
+            WHERE cards.id = $1
+           AND workspaces.owner_id = $2`,
+           [id, req.user.user_id]
+        );
+
+        if(cardResult.rows.length === 0){
+            return res.status(404).json({
+                error:'Card does not exist or you are not authorized!'
+            });
+        }
+       
+        //update the card
         const updatedCards = await pool.query(
             `UPDATE cards
              SET title = $1,
@@ -102,12 +192,7 @@ const updateCards = async (req, res) => {
             [title, description, position, id]
         );
 
-        if (updatedCards.rows.length === 0) {
-            return res.status(404).json({
-                error: 'Card with this id does not exist!'
-            });
-        }
-
+        
         res.status(200).json({
             message: 'Card updated successfully!',
             card: updatedCards.rows[0]
