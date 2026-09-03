@@ -215,18 +215,40 @@ const deleteCardsId = async (req, res) => {
         // extract data to update data
         const id = parseInt(req.params.id);
 
-        //Hit Database 
-        const deleteCards = await pool.query('DELETE FROM cards WHERE id = $1 RETURNING *',
-            [id]);
+         // Check whether the card belongs to the logged-in user
+        const cardResult = await pool.query(
+            `SELECT cards
+            FROM cards
+            JOIN lists
+            ON cards.list_id = lists.id
+            JOIN boards
+            ON lists.board_id = boards.id
+            JOIN workspaces
+            ON boards.workspace_id = workspaces.id
+            WHERE cards.id = $1
+            AND workspaces.owner_id = $2`,
+            [id, req.user.user_id]
+        );
 
-        //Check the result now 
-        if (deleteCards.rows.length === 0) {
-            res.status(404).json({ error: 'Cards with this id does not exist!' });
-        } else {
-            res.status(200).json({ message: 'Card deleted successfully!' });
+         if (cardResult.rows.length === 0) {
+            return res.status(404).json({
+                error: 'Card does not exist or you are not authorized!'
+            });
         }
 
+        //Hit Database(Delete the card)
+        const deleteCards = await pool.query('DELETE FROM cards WHERE id = $1 RETURNING *',
+            [id]);
+ 
+             res.status(200).json({
+            message: 'Card deleted successfully!'
+        });
+        
+        
+
     } catch (error) {
+        console.error(error);
+
         res.status(500).json({ error: 'An Error occured in server!' });
     }
 }
