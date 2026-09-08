@@ -1,21 +1,35 @@
-const {getListsCards, getCards, addCards, updateCards, deleteCardsId} = require('../controllers/cardController');
+const {
+    getListsCards,
+    getBoardBacklog,
+    getCards,
+    addCards,
+    updateCards,
+    assignCard,
+    deleteCardsId
+} = require('../controllers/cardController');
 const { protect } = require('../middleware/authMiddleware');
 const express = require('express');
 const router = express.Router();
 
-//this is a router call to get all cards in specific workspace
+// Get board backlog cards
+router.get('/board/:boardId/backlog', protect, getBoardBacklog);
+
+// Get all cards in a specific list
 router.get('/lists/:id', protect, getListsCards);
 
-//this is a router call to get cards by id
+// Get card by id
 router.get('/:id', protect, getCards);
 
-//this is the router call to add New cards
+// Add new card (standard list card or backlog card)
 router.post('/', protect, addCards);
 
-//this is the router call to update/edit the existing cards
+// Assign card to a team member
+router.put('/:id/assign', protect, assignCard);
+
+// Update/edit existing card
 router.put('/:id', protect, updateCards);
 
-//this is the router call to delete existing cards
+// Delete existing card
 router.delete('/:id', protect, deleteCardsId);
 
 module.exports = router;

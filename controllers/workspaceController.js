@@ -41,39 +41,36 @@ const getworkspacesId = async (req, res) => {
     }
 }
 
+
 //This is the Logic to Add(create)(POST) new Workspace
 const addWorkspace = async (req, res) => {
     try {
-        //fetch key for data fetching      
-        const { name, description, owner_id } = req.body;
+        const { name, description } = req.body;
 
-        //validation 1 
         if (!name || !description) {
-            //bad request(missing field) code 400
-            return res.status(400).json({ error: 'All fields are required!' });
+            return res.status(400).json({
+                error: "All fields are required!"
+            });
         }
 
-        //Hit the Database
-        const resultWorkspace = await pool.query('INSERT INTO workspaces(name, description, owner_id) VALUES($1, $2, $3) RETURNING *',
-            [name, description, owner_id]);
+        const result = await pool.query(
+            `INSERT INTO workspaces(name, description, owner_id)
+             VALUES($1, $2, $3)
+             RETURNING *`,
+            [name, description, req.user.user_id]
+        );
 
-        //now extract newly created  workspaces from array
-        const finalWorkspaces = resultWorkspace.rows[0];
-        res.status(201).json({
-            name: finalWorkspaces.name,
-            description: finalWorkspaces.description
-
-        });
+        res.status(201).json(result.rows[0]);
 
     } catch (error) {
-            console.error(error);
-        if (error.code === '23505') {
-            res.status(500).json({ error: 'email already existed!' });
-        } else {
-            res.status(500).json({ error: 'Server error' });
-        }
+        console.error(error);
+
+        res.status(500).json({
+            error: "Server error"
+        });
     }
-}
+};
+
 
 //logic to update/edit(PUT) existing data
 const updateWorkspaces = async (req, res) => {

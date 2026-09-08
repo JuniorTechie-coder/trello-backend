@@ -65,7 +65,7 @@ const addLists = async (req, res) => {
         );
 
         if (boardResult.rows.length === 0) {
-            res.status(404).json({
+            return res.status(404).json({
                 error: 'Board does not exist or you are not authorized!'
             });
         }
@@ -77,8 +77,10 @@ const addLists = async (req, res) => {
         //now extract newly created  workspaces from array
         const finalLists = resultLists.rows[0];
         res.status(201).json({
+            id: finalLists.id,
             name: finalLists.name,
-            position: finalLists.position
+            position: finalLists.position,
+            board_id: finalLists.board_id
         });
 
     } catch (error) {
@@ -99,7 +101,7 @@ const updateLists = async (req, res) => {
         const id = req.params.id;
 
         // Validation
-        if (!name || !position) {
+        if (!name || position === undefined) {
             return res.status(400).json({
                 error: 'all fields are required!'
             });

@@ -4,10 +4,11 @@ const pool = require('../db');
 //this is the logic to get all users
 const getAllUsers = async (req, res) => {
     try {
-        const result = await pool.query('SELECT * FROM users');
+        const result = await pool.query('SELECT user_id, name, email, profile_image FROM users ORDER BY name ASC');
         res.status(200).json(result.rows);
     } catch (error) {
-        res.status(500).json({ error: "error occured in DB" });
+        console.error("Error fetching users:", error);
+        res.status(500).json({ error: "error occurred in DB" });
     }
 };
 
@@ -15,14 +16,15 @@ const getAllUsers = async (req, res) => {
 const userById = async (req, res) => {
      try {
         const userId = req.params.id;
-        const result1 = await pool.query('SELECT * FROM users WHERE user_id = $1', [userId]);
+        const result1 = await pool.query('SELECT user_id, name, email, profile_image FROM users WHERE user_id = $1', [userId]);
         if (result1.rows.length === 0) {
             res.status(404).json({ error: "user not found" });
         } else {
             res.status(200).json(result1.rows[0]);
         }
     } catch (error) {
-        res.status(500).json({ error: "error occured in DB" });
+        console.error("Error fetching user by id:", error);
+        res.status(500).json({ error: "error occurred in DB" });
     }
 }
 
