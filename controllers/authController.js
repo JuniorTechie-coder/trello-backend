@@ -67,10 +67,11 @@ const loginUser = async (req, res) => {
         const user = findUser.rows[0]; // store it in user variable after the password check
 
         //  password correct → generate token HERE
+        const jwtSecret = process.env.JWT_SECRET || 'anyrandomlongstring123456';
         const token = jwt.sign(
             { user_id: user.user_id, // payload[0]
               email: user.email }, // payload[1]
-            process.env.JWT_SECRET,//secret key for signing the token
+            jwtSecret,//secret key for signing the token
             { expiresIn: '7d' }
         );
         

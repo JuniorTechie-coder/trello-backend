@@ -15,7 +15,8 @@ const protect = async (req, res, next) => {
     }
 
     try {
-        const decoded = jwt.verify(token, process.env.JWT_SECRET);//verify token 
+        const jwtSecret = process.env.JWT_SECRET || 'anyrandomlongstring123456';
+        const decoded = jwt.verify(token, jwtSecret);//verify token 
 
         //attach user info to request and call next:
         req.user = decoded;
