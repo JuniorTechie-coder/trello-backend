@@ -15,7 +15,7 @@ const app = express();
 //MiddleWare
 app.use(express.json());
 app.use(cors({
-    origin: 'https://vercel.app' // Replace with your actual Vercel URL later
+    origin: 'https://react-auth-frontend-liart.vercel.app' // Replace with your actual Vercel URL later
 }));
 
 //Logger
