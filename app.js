@@ -14,7 +14,9 @@ const app = express();
 
 //MiddleWare
 app.use(express.json());
-app.use(cors());
+app.use(cors({
+    origin: 'https://vercel.app' // Replace with your actual Vercel URL later
+}));
 
 //Logger
 app.use((req, res, next) => {
@@ -39,8 +41,9 @@ app.use((req, res) => {
     res.status(404).json('error: Users not found');
 });
 
-//server start
-app.listen(3000, () => {
-    console.log("Server running on port 3000");
+// Server start
+const PORT = process.env.PORT || 3000;
+app.listen(PORT, () => {
+    console.log(`Server running on port ${PORT}`);
 });
 
